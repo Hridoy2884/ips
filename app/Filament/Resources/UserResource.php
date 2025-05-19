@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\User;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Pages\Page;
+use Filament\Resources\Pages\CreateRecord;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class UserResource extends Resource
+{
+    protected static ?string $model = User::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                //
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('email')
+
+                    ->required()
+                    ->email()
+                    ->maxLength(255)
+                    ->label('Email Address')
+                    ->unique(ignoreRecord: true),
+
+
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->required(fn(Page $livewire): bool => $livewire instanceof CreateRecord)
+
+
+                    ->dehydrated(fn($state) => filled($state)),
+
+                Forms\Components\TextInput::make('email_verified_at')
+                    ->label('Email Verified At')
+                    ->default(now()),
+
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                //
+
+                Tables\Columns\TextColumn::make('name')
+
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('email')
+
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('email_verified_at')
+                    ->sortable()
+                    ->label('Email Verified At')
+                    ->default(now())
+
+                    ->dateTime(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->sortable()
+                    ->label('Created At')
+                    ->dateTime(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->sortable()
+                    ->label('Updated At')
+                    ->dateTime(),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                        ->label('Edit')
+                        ->icon('heroicon-o-pencil')
+                        ->color('primary'),
+
+                    Tables\Actions\ViewAction::make()
+                        ->label('View')
+                        ->icon('heroicon-o-eye')
+                        ->color('secondary'),
+
+
+
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Delete')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger'),
+
+
+                ])
+
+
+
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+            RelationManagers\OrdersRelationManager::class,
+
+        ];
+    }
+    public static function getGloballySearchableAttributes(): array
+{
+    return ['name', 'email'];
+}
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListUsers::route('/'),
+            'create' => Pages\CreateUser::route('/create'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
+        ];
+    }
+}

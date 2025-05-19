@@ -1,0 +1,7 @@
+/* Preline Variants (optional, only if you use it) */
+@import "../../node_modules/preline/variants.css";
+
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

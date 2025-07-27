@@ -6,8 +6,9 @@ use App\Models\Brand;
 use App\Models\Category;
 use Livewire\Component;
 use Livewire\Attributes\Title;
+use App\Models\Advertisement;
 
-#[Title('Home Page-Gadgety')]
+#[Title('Home Page-Jui')]
 class HomePage extends Component
 {
     public function render()
@@ -19,6 +20,7 @@ class HomePage extends Component
             ->orderBy('name')
             ->get();
         return view('livewire.home-page',[
+             'ads' => Advertisement::all(),
             'brands'=>$brands,
             'categories'=>$categories,
         ]);

@@ -9,7 +9,7 @@ use Livewire\Component;
 use Livewire\Attributes\Title;
 
 
-#[Title('OrderDetail -Gadgety')]
+#[Title('OrderDetail -Jui')]
 
 class MyOrderDetailPage extends Component
 {

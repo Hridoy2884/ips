@@ -22,8 +22,8 @@
 
 
     
-    <body class="bg-slate-200 dark:bg-slate-900 ">
-        <header>
+    <body class="bg-white ">
+        <header class="z-50 sticky top-0">
             @livewire('partials.navbar')
         </header>
         

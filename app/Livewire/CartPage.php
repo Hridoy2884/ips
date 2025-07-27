@@ -8,7 +8,7 @@ use App\Livewire\Partials\Navbar;
 use Livewire\Attributes\Title;
 
 
-#[Title('CartPage -Gadgety')]
+#[Title('CartPage -JUI')]
 class CartPage extends Component
 {
     public $cart_items =[];

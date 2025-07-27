@@ -9,7 +9,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 
-#[Title('My Orders -Gadgety')]
+#[Title('My Orders -Jui')]
 
 class MyOrdersPage extends Component
 {

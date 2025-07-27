@@ -12,7 +12,7 @@ use Livewire\Attributes\Title;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
 
-#[Title('CheckoutPage -Gadgety')]
+#[Title('CheckoutPage -Jui')]
 class CheckoutPage extends Component
 {
     public $first_name;

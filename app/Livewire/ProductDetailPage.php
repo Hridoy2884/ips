@@ -8,7 +8,7 @@ use App\Helpers\CartManagement;
 use App\Livewire\Partials\Navbar;
 
 
-#[Title('ProductDetailPage -Gadgety')]
+#[Title('ProductDetailPage -Jui')]
 class ProductDetailPage extends Component
 {
     public $slug;

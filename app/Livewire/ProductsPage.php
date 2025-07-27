@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Cookie;
 
 use Livewire\Attributes\Title;
 
-#[Title('ProductsPage -Gadgety')]
+#[Title('ProductsPage -Jui')]
 
 class ProductsPage extends Component
 {

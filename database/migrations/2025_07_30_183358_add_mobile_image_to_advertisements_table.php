@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('addresses', function (Blueprint $table) {
-        $table->renameColumn('state', 'district');
-        });
+        Schema::table('advertisements', function (Blueprint $table) {
+        $table->string('mobile_image')->nullable()->after('image');
+    });
     }
 
     /**
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-         Schema::table('addresses', function (Blueprint $table) {
-        $table->renameColumn('district', 'state');
-        });
+       Schema::table('advertisements', function (Blueprint $table) {
+        $table->dropColumn('mobile_image');
+    });
     }
 };

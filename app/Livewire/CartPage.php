@@ -15,31 +15,35 @@ class CartPage extends Component
     public $grand_total;
 
 
-    public function mount()
-    {
-        $cart_items = CartManagement::getCartItemsFromCookie();
+public function mount()
+{
+    $cart_items = CartManagement::getCartItemsFromCookie();
 
-    // Ensure we load full product details
     $this->cart_items = collect($cart_items)->map(function ($item) {
-        // Handle if $item is just an ID or an array with product_id
         $productId = is_array($item) ? $item['product_id'] : $item;
 
         $product = \App\Models\Product::find($productId);
 
+        if (!$product) {
+            // Product not found, skip this item
+            return null;
+        }
+
         return [
-          'product_id'   => $product->id,
+            'product_id'   => $product->id,
             'name'         => $product->name,
             'image'        => $product->images[0] ?? null,
-            'unit_amount'  => $item['unit_amount'], // ✅ include this
+            'unit_amount'  => $item['unit_amount'],
             'quantity'     => $item['quantity'],
-            'total_amount' => $item['total_amount'], // ✅ and this
+            'total_amount' => $item['total_amount'],
         ];
-    })->toArray();
+    })
+    ->filter() // remove null values from map
+    ->values()
+    ->toArray();
 
     $this->grand_total = CartManagement::calculateGrandTotal($this->cart_items);
-       
-        
-    }
+}
 
     public function removeItem($product_id)
     {

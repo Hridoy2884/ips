@@ -11,7 +11,8 @@ class Advertisement extends Model
 
     // Fields you want to allow for mass assignment
     protected $fillable = [
-        'image',    // e.g., "images/banner1.jpg"
+        'image',   // e.g., "images/banner1.jpg"
+        'mobile_image',   // e.g., "images/banner1.jpg"
         'title',    // optional
         'link',     // optional (where ad redirects to)
         'is_active' // optional for status

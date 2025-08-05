@@ -16,4 +16,15 @@ class EditProduct extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    // ✅ Fix to ensure images are passed as-is
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // Only decode if it's a string, otherwise return as-is
+        if (is_string($data['images'])) {
+            $data['images'] = json_decode($data['images'], true) ?? [];
+        }
+
+        return $data;
+    }
 }

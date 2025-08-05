@@ -15,6 +15,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Group; // ✅ correct component import
+
+use Filament\Tables\Actions;
+
 
 class AdvertisementResource extends Resource
 {
@@ -25,14 +29,25 @@ class AdvertisementResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-           ->schema([
+       ->schema([
             TextInput::make('title')->label('Ad Title')->maxLength(255),
-            FileUpload::make('image')
-                ->image()
-                ->directory('ads') // store under: storage/app/public/ads/
-                ->required(),
+            
+            Group::make([
+                FileUpload::make('image')
+                    ->label('Desktop Image')
+                    ->image()
+                    ->directory('ads')
+                    ->required(),
+
+                FileUpload::make('mobile_image')
+                    ->label('Mobile Image')
+                    ->image()
+                    ->directory('ads')
+                    ->helperText('Optional – shown only on mobile'),
+            ])->columns(2),
+
             Toggle::make('is_active')->default(true),
-            ]);
+        ]);
     }
 
     public static function table(Table $table): Table

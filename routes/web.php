@@ -15,12 +15,26 @@ use App\Livewire\ProductDetailPage;
 use App\Livewire\ProductsPage;
 use App\Livewire\SuccessPage;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\PolicyPage;
+
 
 Route::get('/', HomePage::class);
 Route::get('/categories',CategoriesPage::class);
 Route::get('/products',ProductsPage::class);
 Route::get('/cart',CartPage::class);
 Route::get('/products/{slug}',ProductDetailPage::class);
+
+Route::get('/policies/{slug}', PolicyPage::class)->name('policy.show');
+
+
+
+
+
+
+
+
+
+
 
 
 Route::get('/login',LoginPage::class);
@@ -47,7 +61,8 @@ Route::middleware('auth')->group(function(){
     });
     
 
-    Route::get('/checkout',CheckoutPage::class);
+    Route::get('/checkout', CheckoutPage::class)->name('checkout');
+
     Route::get('/my-orders',MyOrdersPage::class);
     Route::get('/my-orders/{order_id}',MyOrderDetailPage::class)->name('my-orders.show');
     Route::get('/success',SuccessPage::class)->name('success');

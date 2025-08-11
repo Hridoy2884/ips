@@ -1,59 +1,78 @@
 <footer class="bg-white w-full">
-  <div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 lg:pt-20 mx-auto">
-    <!-- Grid -->
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-      <div class="col-span-full lg:col-span-1">
-        <a class="flex-none text-xl font-semibold text-green-700" href="#" aria-label="Brand">Jui power digital IPS</a>
-      </div>
+    <div class="w-full max-w-7xl py-10 px-4 sm:px-6 lg:px-8 mx-auto">
+        <!-- Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
 
-      <div class="col-span-1">
-        <h4 class="font-semibold text-green-700">Product</h4>
-        <div class="mt-3 grid space-y-3">
-          <p><a class="text-gray-600 hover:text-green-600" href="/categories">Categories</a></p>
-          <p><a class="text-gray-600 hover:text-green-600" href="/products">All Products</a></p>
-          <p><a class="text-gray-600 hover:text-green-600" href="/products">Featured Products</a></p>
+            <!-- Brand -->
+            <div class="col-span-full lg:col-span-2">
+                <a href="#" aria-label="Brand" class="text-2xl font-bold text-green-700 block mb-2">Jui Power Digital
+                    IPS</a>
+                <p class="text-sm text-gray-600">Powering homes with reliable, efficient, and affordable IPS solutions
+                    across Bangladesh.</p>
+            </div>
+
+            <!-- About -->
+            <div class="col-span-1">
+                <h4 class="font-semibold text-green-700 mb-3">About Us</h4>
+                <p class="text-sm text-gray-600">
+                    At <strong>Jui Power Digital IPS</strong>, we specialize in delivering top-tier power backup systems
+                    that meet modern-day demands. From product design to user experience, every detail reflects quality
+                    and innovation.
+                </p>
+            </div>
+
+            <!-- Policies -->
+            <div class="col-span-1">
+                <h4 class="font-semibold text-green-700 mb-3">Policies</h4>
+                <ul>
+                    @foreach (\App\Models\Policy::all() as $policy)
+                        <li>
+                            <a href="{{ route('policy.show', $policy->slug) }}" class="hover:underline">
+                                {{ $policy->title }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+
+            </div>
+
+            <!-- Contact -->
+            <div class="col-span-2">
+                <h4 class="font-semibold text-green-700 mb-3">Contact Us</h4>
+                <div class="text-sm text-gray-600 space-y-2">
+                    <p><strong>Phone:</strong> <a href="tel:01713540038"
+                            class="hover:text-green-600 font-medium">01713-540038</a></p>
+                    <p><strong>Email:</strong> <a href="mailto:support@juipower.com"
+                            class="hover:text-green-600 font-medium">support@juipower.com</a></p>
+                    <p><strong>Address:</strong> Gazipur National University, Bangladesh</p>
+                    <a href="https://maps.app.goo.gl/WvQGCh7RL7FqLnLF6?g_st=aw" target="_blank"
+                        class="inline-block mt-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-all">
+                        📍 Get Directions
+                    </a>
+                </div>
+            </div>
+
         </div>
-      </div>
+        <!-- End Grid -->
 
-      <div class="col-span-1">
-        <h4 class="font-semibold text-green-700">Company</h4>
-        <div class="mt-3 grid space-y-3">
-          <p><a class="text-gray-600 hover:text-green-600" href="#">About us</a></p>
-          <p><a class="text-gray-600 hover:text-green-600" href="#">Blog</a></p>
-          <p><a class="text-gray-600 hover:text-green-600" href="#">Customers</a></p>
+        <div class="mt-10 border-t pt-6 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-sm text-gray-500 mb-4 md:mb-0">© 2025 Jui Power Digital IPS. All rights reserved.</p>
+
+            <!-- Social Icons -->
+            <div class="flex gap-3">
+                <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook"
+                    class="w-10 h-10 flex items-center justify-center rounded-full text-green-600 border border-green-100 hover:bg-green-100 transition">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.youtube.com/" target="_blank" aria-label="YouTube"
+                    class="w-10 h-10 flex items-center justify-center rounded-full text-green-600 border border-green-100 hover:bg-green-100 transition">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://wa.me/880123456789" target="_blank" aria-label="WhatsApp"
+                    class="w-10 h-10 flex items-center justify-center rounded-full text-green-600 border border-green-100 hover:bg-green-100 transition">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
         </div>
-      </div>
-
-      <div class="col-span-2">
-        <h4 class="font-semibold text-green-700">Stay up to date</h4>
-        <form>
-          <div class="mt-4 flex flex-col items-center gap-2 sm:flex-row sm:gap-3 bg-green-50 p-2 rounded-lg">
-            <input type="text" placeholder="Enter your email"
-              class="py-3 px-4 w-full rounded-lg text-sm border border-gray-300 focus:border-green-500 focus:ring-green-500" />
-            <a class="w-full sm:w-auto p-3 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg bg-green-600 text-white hover:bg-green-700"
-              href="#">
-              Subscribe
-            </a>
-          </div>
-        </form>
-      </div>
     </div>
-    <!-- End Grid -->
-
-    <div class="mt-5 sm:mt-12 flex flex-col sm:flex-row justify-between items-center">
-      <p class="text-sm text-gray-500">© 2025 Jui. All rights reserved.</p>
-
-      <div class="flex gap-2 mt-4 sm:mt-0">
-        <!-- Social Icons -->
-        <a class="w-10 h-10 inline-flex justify-center items-center rounded-full text-green-600 border border-green-100 hover:bg-green-100"
-          href="#"><i class="fab fa-facebook-f"></i></a>
-        <a class="w-10 h-10 inline-flex justify-center items-center rounded-full text-green-600 border border-green-100 hover:bg-green-100"
-          href="#"><i class="fab fa-google"></i></a>
-        <a class="w-10 h-10 inline-flex justify-center items-center rounded-full text-green-600 border border-green-100 hover:bg-green-100"
-          href="#"><i class="fab fa-twitter"></i></a>
-        <a class="w-10 h-10 inline-flex justify-center items-center rounded-full text-green-600 border border-green-100 hover:bg-green-100"
-          href="#"><i class="fab fa-github"></i></a>
-      </div>
-    </div>
-  </div>
 </footer>

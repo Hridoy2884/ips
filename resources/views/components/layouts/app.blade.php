@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ $title ?? 'Gadgety' }}</title>
+    <title>{{ $title ?? 'Jui Power Digital Ips' }}</title>
     {{-- <meta name="description" content="{{ $description ?? 'eGadget - Your one-stop shop for all gadgets' }}">
         <meta name="keywords" content="{{ $keywords ?? 'gadgets, electronics, online shop' }}"> --}}
 

@@ -12,6 +12,7 @@ use Livewire\WithPagination;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Title;
 
+
 #[Title('ProductsPage - Jui')]
 class ProductsPage extends Component
 {
@@ -102,4 +103,19 @@ class ProductsPage extends Component
             'categories' => Category::where('is_active', true)->get(['id', 'name', 'slug']),
         ]);
     }
+
+    //buy now button action
+public function buyNow($product_id)
+{
+    // Clear existing cart first (optional, or you can customize)
+    CartManagement::clearCartItems();
+
+    // Add only this product to cart
+    CartManagement::addItemToCart($product_id);
+
+    // Redirect to checkout page
+    return redirect()->route('checkout');
+}
+
+
 }

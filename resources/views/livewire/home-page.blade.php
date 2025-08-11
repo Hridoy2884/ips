@@ -13,10 +13,11 @@
                         Jui Power Digital IPS
                     </span>
                 </h1>
-<p class="mt-6 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-green-600 dark:text-green-300 tracking-wide flex items-center justify-center md:justify-start gap-2 min-h-[2.5rem] sm:min-h-[3rem]">
-    <span id="typing-text" class="whitespace-nowrap overflow-hidden text-ellipsis max-w-full"></span>
-    <span id="cursor" class="text-green-500 text-2xl sm:text-3xl font-bold">|</span>
-</p>
+                <p
+                    class="mt-6 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-green-600 dark:text-green-300 tracking-wide flex items-center justify-center md:justify-start gap-2 min-h-[2.5rem] sm:min-h-[3rem]">
+                    <span id="typing-text" class="whitespace-nowrap overflow-hidden text-ellipsis max-w-full"></span>
+                    <span id="cursor" class="text-green-500 text-2xl sm:text-3xl font-bold">|</span>
+                </p>
 
 
 
@@ -34,11 +35,25 @@
               transition-transform duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400">
                     🌿 Get Started
                 </a>
-                <a href="/contact"
+                <a id="contact-sales-btn"
                     class="px-6 py-3 text-green-800 bg-green-100 hover:bg-green-200 border border-green-300 rounded-full font-medium shadow-sm 
-              transition-transform duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-200">
+    transition-transform duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-200 cursor-pointer">
                     📞 Contact Sales Team
                 </a>
+
+                <script>
+                    document.getElementById('contact-sales-btn').addEventListener('click', function() {
+                        const phoneNumber = '01713540038'; // Replace with your number, include country code (no spaces)
+
+                        // Check if user is on a mobile device
+                        if (/Mobi|Android/i.test(navigator.userAgent)) {
+                            window.location.href = `tel:${phoneNumber}`;
+                        } else {
+                            window.open(`https://wa.me/${phoneNumber.replace('+', '')}`, '_blank');
+                        }
+                    });
+                </script>
+
             </div>
 
 
@@ -185,53 +200,53 @@
     </script>
     {{-- script for typing effect --}}
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const textEl = document.getElementById("typing-text");
-        const cursorEl = document.getElementById("cursor");
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const textEl = document.getElementById("typing-text");
+            const cursorEl = document.getElementById("cursor");
 
-        const messages = [
-            "No.1 Solar & IPS Provider in Bangladesh",
-            "Smart, Green & Reliable Power Solutions",
-            "Powering a Sustainable Tomorrow 💡☀️"
-        ];
+            const messages = [
+                "No.1 Solar & IPS Provider in Bangladesh",
+                "Smart, Green & Reliable Power Solutions",
+                "Powering a Sustainable Tomorrow 💡☀️"
+            ];
 
-        let messageIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
+            let messageIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
 
-        function typeEffect() {
-            const current = messages[messageIndex];
-            const visibleText = current.substring(0, charIndex);
-            textEl.textContent = visibleText;
+            function typeEffect() {
+                const current = messages[messageIndex];
+                const visibleText = current.substring(0, charIndex);
+                textEl.textContent = visibleText;
 
-            if (isDeleting) {
-                charIndex--;
-                if (charIndex === 0) {
-                    isDeleting = false;
-                    messageIndex = (messageIndex + 1) % messages.length;
-                    setTimeout(typeEffect, 700);
-                    return;
+                if (isDeleting) {
+                    charIndex--;
+                    if (charIndex === 0) {
+                        isDeleting = false;
+                        messageIndex = (messageIndex + 1) % messages.length;
+                        setTimeout(typeEffect, 700);
+                        return;
+                    }
+                } else {
+                    charIndex++;
+                    if (charIndex === current.length) {
+                        isDeleting = true;
+                        setTimeout(typeEffect, 1500);
+                        return;
+                    }
                 }
-            } else {
-                charIndex++;
-                if (charIndex === current.length) {
-                    isDeleting = true;
-                    setTimeout(typeEffect, 1500);
-                    return;
-                }
+
+                const delay = isDeleting ? 40 : 70;
+                setTimeout(typeEffect, delay);
             }
 
-            const delay = isDeleting ? 40 : 70;
-            setTimeout(typeEffect, delay);
-        }
-
-        typeEffect();
-    });
-</script>
+            typeEffect();
+        });
+    </script>
 
 
-{{-- end script for typing effect --}}
+    {{-- end script for typing effect --}}
 
 
 
@@ -405,14 +420,8 @@
     {{-- completed project section end --}}
 
     {{-- products reviews section start --}}
-    
 
 
-    {{-- customer review section start --}}
-    @livewire('review-form')
 
-
-  
-    {{-- customer review section end --}}
 
     </div>

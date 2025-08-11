@@ -105,6 +105,13 @@
                                                 <span wire:loading
                                                     wire:target='addToCart({{ $product->id }})'>Adding...</span>
                                             </a>
+
+                                            <!-- Buy Now Button -->
+    <a wire:click.prevent="buyNow({{ $product->id }})"
+       class="inline-flex items-center px-4 py-2 bg-green-700 text-white text-sm font-semibold rounded hover:bg-green-800 transition cursor-pointer">
+       Buy Now
+    </a>
+
                                         </div>
                                     </div>
                                 </div>

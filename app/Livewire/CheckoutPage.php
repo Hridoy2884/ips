@@ -8,32 +8,28 @@ use App\Models\Address;
 use App\Models\Order;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
-use Livewire\Attributes\Title;
-use Stripe\Stripe;
-use Stripe\Checkout\Session;
+use Livewire\WithFileUploads;
 
-#[Title('CheckoutPage -Jui')]
 class CheckoutPage extends Component
 {
-    public $first_name;
-    public $last_name;
-    public $phone;
-    public $city;
-    public $street_address;
-    public $zip_code;
-    public $district;
-    public $payment_method;
+    use WithFileUploads;
 
-    public function mount(){
+    public $first_name, $last_name, $phone, $city, $street_address, $zip_code, $district;
+    public $payment_method;
+    public $transaction_id;
+    public $payment_proof;
+
+    public function mount()
+    {
         $cart_items = CartManagement::getCartItemsFromCookie();
-        if (count($cart_items) == 0) {
+        if (count($cart_items) === 0) {
             return redirect('/products');
         }
-
     }
 
-    public function placeOrder(){
-        $this->validate([
+    protected function rules()
+    {
+        $rules = [
             'first_name' => 'required',
             'last_name' => 'required',
             'phone' => 'required',
@@ -41,43 +37,59 @@ class CheckoutPage extends Component
             'street_address' => 'required',
             'zip_code' => 'required',
             'district' => 'required',
-            'payment_method' => 'required'
-        ]);
+            'payment_method' => 'required|in:cod,manual', // cod or manual
+        ];
 
-        // Here you can add the logic to place the order
-        // For example, save the order details to the database
+        if ($this->payment_method === 'manual') {
+            $rules['transaction_id'] = 'required|string|max:255';
+            $rules['payment_proof'] = 'nullable|image|max:2048';
+        }
 
-        // session()->flash('message', 'Order placed successfully!');
+        if ($this->payment_method === 'cod') {
+            // no transaction or proof required for COD advance
+        }
+
+        return $rules;
+    }
+
+    public function calculateAdvanceAmount(array $cart_items): float
+    {
+        if ($this->payment_method !== 'cod') {
+            return 0;
+        }
+        $total = 0;
+        foreach ($cart_items as $item) {
+            $total += $item['unit_amount'] * $item['quantity'] * 0.15; // 15% advance
+        }
+        return round($total, 2);
+    }
+
+    public function placeOrder()
+    {
+        $this->validate();
 
         $cart_items = CartManagement::getCartItemsFromCookie();
-
-        $line_items = [];
-        foreach ($cart_items as $item) {
-            $line_items[] = [
-               
-                'price_data' =>[
-                    'currency'=>'BDT',
-                    'unit_amount'=>$item['unit_amount'] * 100,
-                    'product_data'=>[
-                        'name'=>$item['name'],
-                    ]
-
-                ],
-                'quantity'=>$item['quantity'],
-            ];
-        }
 
         $order = new Order();
         $order->user_id = auth()->user()->id;
         $order->grand_total = CartManagement::calculateGrandTotal($cart_items);
+        $order->advance_amount = $this->calculateAdvanceAmount($cart_items);
         $order->payment_method = $this->payment_method;
         $order->payment_status = 'pending';
+        $order->transaction_id = $this->payment_method === 'manual' ? $this->transaction_id : null;
+
+        if ($this->payment_method === 'manual' && $this->payment_proof) {
+            $order->payment_proof = $this->payment_proof->store('payment_proofs', 'public');
+        }
+
         $order->currency = 'BDT';
         $order->shipping_amount = 0;
         $order->shipping_method = 'none';
-        $order->notes = 'Order placed by'.auth()->user()->name;
+        $order->notes = 'Order placed by ' . auth()->user()->name;
+        $order->save();
 
         $address = new Address();
+        $address->order_id = $order->id;
         $address->first_name = $this->first_name;
         $address->last_name = $this->last_name;
         $address->phone = $this->phone;
@@ -85,71 +97,28 @@ class CheckoutPage extends Component
         $address->street_address = $this->street_address;
         $address->zip_code = $this->zip_code;
         $address->district = $this->district;
+        $address->save();
 
-        $redirect_url ='';
+        $order->orderItems()->createMany($cart_items);
 
+        CartManagement::clearCartItems();
 
-       if($this->payment_method == 'stripe'){
-       Stripe::setApiKey(env('STRIPE_SECRET'));
-       $sessionCheckout = Session::create([
-        'payment_method_types' => ['card'],
-        'customer_email' => auth()->user()->email,
-        'line_items' => $line_items,
-        'mode' => 'payment',
-        'success_url' => route('success').'?session_id={CHECKOUT_SESSION_ID}',
-        'cancel_url' => route('cancel'),
+        // Send order placed email (optional)
+        Mail::to(auth()->user()->email)->send(new OrderPlaced($order));
 
-
-
-       ]);
-         $redirect_url = $sessionCheckout->url;
-
-
-
-
-       }
-
-       else {
-        $redirect_url = route('success');
-
-
-       }
-       $order->save();
-       $address -> order_id= $order->id;
-         $address->save();
-         $order->orderItems()->createMany($cart_items);
-            CartManagement::clearCartItems();
-
-        // Send email to user
-       
-        Mail::to(request()->user())->send(new OrderPlaced($order));
-   
-
-     
-        // Mail::to($user->email)->send(new OrderPlaced($order));
-
-        // Mail::to(auth()->user()->email)->send(new OrderPlaced($order));
-        // Send email to admin
-        // Mail::to(env('ADMIN_EMAIL'))->send(new OrderPlaced($order));
-
-
-            return redirect($redirect_url);
-
-
-
-
-
-
-       
+        return redirect()->route('success', ['transaction_id' => $order->transaction_id]);
     }
 
     public function render()
     {
         $cart_items = CartManagement::getCartItemsFromCookie();
         $grand_total = CartManagement::calculateGrandTotal($cart_items);
-        return view('livewire.checkout-page',[
+        $advance_amount = $this->calculateAdvanceAmount($cart_items);
+
+        return view('livewire.checkout-page', [
             'cart_items' => $cart_items,
             'grand_total' => $grand_total,
+            'advance_amount' => $advance_amount,
         ]);
     }
 }

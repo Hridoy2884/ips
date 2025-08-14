@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ $title ?? 'Jui Power Digital Ips' }}</title>
-    {{-- <meta name="description" content="{{ $description ?? 'eGadget - Your one-stop shop for all gadgets' }}">
-        <meta name="keywords" content="{{ $keywords ?? 'gadgets, electronics, online shop' }}"> --}}
+    <title>{{ $seoTitle ?? ($page->name ?? 'Jui Power Digital Ips') }}</title>
+    <meta name="description" content="{{ $seoDescription ?? ($page->short_description ?? 'Your trusted power solutions provider') }}">
+    <meta name="keywords" content="{{ $seoKeywords ?? ($page->tags ?? 'IPS, inverter, battery, power solutions') }}">
 
     <!-- ✅ Add this line below your <title> tag -->
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">

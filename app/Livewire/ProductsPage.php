@@ -12,7 +12,6 @@ use Livewire\WithPagination;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Title;
 
-
 #[Title('ProductsPage - Jui')]
 class ProductsPage extends Component
 {
@@ -39,10 +38,37 @@ class ProductsPage extends Component
     #[Url]
     public $search = ''; // For search input binding
 
+    // SEO properties
+    public $seoTitle;
+    public $seoDescription;
+    public $seoKeywords;
+
+    public function mount()
+    {
+        // Default SEO for products page
+        $this->seoTitle = 'Products - Jui Power Digital Ips';
+        $this->seoDescription = 'Explore our latest collection of products at Jui Power Digital Ips. Find the best deals on featured and on-sale items.';
+        $this->seoKeywords = 'Jui, products, IPS, battery, inverter,solar,solar panel, electronics';
+    }
+
     // Reset pagination when search input is updated
     public function updatedSearch()
     {
         $this->resetPage();
+    }
+
+    // Optionally update SEO when categories are selected
+    public function updatedSelectedCategories()
+    {
+        $this->resetPage();
+        $categoryNames = Category::whereIn('id', $this->selected_categories)->pluck('name')->toArray();
+        if (!empty($categoryNames)) {
+            $this->seoTitle = implode(', ', $categoryNames) . ' - Products';
+            $this->seoDescription = 'Showing products in categories: ' . implode(', ', $categoryNames);
+        } else {
+            $this->seoTitle = 'Products - Jui Power Digital Ips';
+            $this->seoDescription = 'Explore our latest collection of products at Jui Power Digital Ips.';
+        }
     }
 
     // Add product to cart method
@@ -59,6 +85,19 @@ class ProductsPage extends Component
         //     'toast' => true,
         //     'icon' => 'success',
         // ]);
+    }
+
+    // Buy now button action
+    public function buyNow($product_id)
+    {
+        // Clear existing cart first (optional)
+        CartManagement::clearCartItems();
+
+        // Add only this product to cart
+        CartManagement::addItemToCart($product_id);
+
+        // Redirect to checkout page
+        return redirect()->route('checkout');
     }
 
     public function render()
@@ -87,8 +126,6 @@ class ProductsPage extends Component
 
         if (!empty($this->search)) {
             $productsQuery->where('name', 'like', '%' . $this->search . '%');
-            // OR case-insensitive:
-            // $productsQuery->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($this->search) . '%']);
         }
 
         if ($this->sort == 'latest') {
@@ -103,19 +140,4 @@ class ProductsPage extends Component
             'categories' => Category::where('is_active', true)->get(['id', 'name', 'slug']),
         ]);
     }
-
-    //buy now button action
-public function buyNow($product_id)
-{
-    // Clear existing cart first (optional, or you can customize)
-    CartManagement::clearCartItems();
-
-    // Add only this product to cart
-    CartManagement::addItemToCart($product_id);
-
-    // Redirect to checkout page
-    return redirect()->route('checkout');
-}
-
-
 }

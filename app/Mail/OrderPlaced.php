@@ -14,38 +14,27 @@ class OrderPlaced extends Mailable
     use Queueable, SerializesModels;
 
     public $order;
-
-    /**
-     * Create a new message instance.
-     */
     public function __construct($order)
     {
-       $this->order = $order;
-       
-
+        $this->order = $order;
     }
 
-    /**
-     * Get the message envelope.
-     */
+
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Order Placed - Gadgety',
+            subject: 'Order Placed - juipowerbd.com',
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(
             markdown: 'mail.orders.placed',
             with: [
                 'url' => route('my-orders.show', $this->order),
-               
-               // Pass user to the view
+
+                // Pass user to the view
             ],
         );
     }

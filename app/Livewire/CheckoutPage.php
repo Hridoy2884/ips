@@ -19,12 +19,16 @@ class CheckoutPage extends Component
     public $transaction_id;
     public $payment_proof;
 
+    public $advance_amount; // 15% COD advance
+
     public function mount()
     {
         $cart_items = CartManagement::getCartItemsFromCookie();
         if (count($cart_items) === 0) {
             return redirect('/products');
         }
+
+        $this->advance_amount = $this->calculateAdvanceAmount($cart_items);
     }
 
     protected function rules()
@@ -37,7 +41,7 @@ class CheckoutPage extends Component
             'street_address' => 'required',
             'zip_code' => 'required',
             'district' => 'required',
-            'payment_method' => 'required|in:cod,manual', // cod or manual
+            'payment_method' => 'required|in:cod,manual',
         ];
 
         if ($this->payment_method === 'manual') {
@@ -46,7 +50,7 @@ class CheckoutPage extends Component
         }
 
         if ($this->payment_method === 'cod') {
-            // no transaction or proof required for COD advance
+            $rules['transaction_id'] = 'required|string|max:255'; // for 15% advance
         }
 
         return $rules;
@@ -54,9 +58,6 @@ class CheckoutPage extends Component
 
     public function calculateAdvanceAmount(array $cart_items): float
     {
-        if ($this->payment_method !== 'cod') {
-            return 0;
-        }
         $total = 0;
         foreach ($cart_items as $item) {
             $total += $item['unit_amount'] * $item['quantity'] * 0.15; // 15% advance
@@ -73,10 +74,10 @@ class CheckoutPage extends Component
         $order = new Order();
         $order->user_id = auth()->user()->id;
         $order->grand_total = CartManagement::calculateGrandTotal($cart_items);
-        $order->advance_amount = $this->calculateAdvanceAmount($cart_items);
+        $order->advance_amount = $this->advance_amount;
         $order->payment_method = $this->payment_method;
         $order->payment_status = 'pending';
-        $order->transaction_id = $this->payment_method === 'manual' ? $this->transaction_id : null;
+        $order->transaction_id = $this->transaction_id;
 
         if ($this->payment_method === 'manual' && $this->payment_proof) {
             $order->payment_proof = $this->payment_proof->store('payment_proofs', 'public');
@@ -103,7 +104,7 @@ class CheckoutPage extends Component
 
         CartManagement::clearCartItems();
 
-        // Send order placed email (optional)
+        // Send order placed email
         Mail::to(auth()->user()->email)->send(new OrderPlaced($order));
 
         return redirect()->route('success', ['transaction_id' => $order->transaction_id]);
@@ -113,12 +114,11 @@ class CheckoutPage extends Component
     {
         $cart_items = CartManagement::getCartItemsFromCookie();
         $grand_total = CartManagement::calculateGrandTotal($cart_items);
-        $advance_amount = $this->calculateAdvanceAmount($cart_items);
 
         return view('livewire.checkout-page', [
             'cart_items' => $cart_items,
             'grand_total' => $grand_total,
-            'advance_amount' => $advance_amount,
+            'advance_amount' => $this->advance_amount,
         ]);
     }
 }

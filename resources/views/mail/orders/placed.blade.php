@@ -9,5 +9,5 @@ View Order Details
 </x-mail::button>
 
 Thanks,<br>
-Gadegty
+juipowerbd.com
 </x-mail::message>

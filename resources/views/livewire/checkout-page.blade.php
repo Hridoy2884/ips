@@ -66,14 +66,35 @@
         <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
           <div class="text-lg font-semibold mb-4">Select Payment Method</div>
           <ul class="grid w-full gap-6 md:grid-cols-2">
-            <li>
-              <input wire:model="payment_method" class="hidden peer" id="cod" type="radio" value="cod" required />
-              <label for="cod" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer
-                dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100
-                dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
-                <div class="block w-full text-lg font-semibold">Cash on Delivery (15% advance required)</div>
-              </label>
-            </li>
+            <div>
+<label>
+    <input type="radio" wire:model="payment_method" value="cod"> Cash on Delivery
+</label>
+<label class="ml-4">
+    <input type="radio" wire:model="payment_method" value="manual"> Manual Payment
+</label>
+
+{{-- Dynamic COD instructions --}}
+@if($payment_method === 'cod')
+    <div class="cod-info mt-4 p-4 border rounded bg-gray-50">
+        <p>Please pay <strong>15% of your order total</strong> using one of the following methods and enter your transaction ID:</p>
+
+        <ul class="list-disc pl-5 mt-2">
+            <li><a href="tel:01XXXXXXXXX">bKash: 01XXXXXXXXX</a></li>
+            <li><a href="tel:01XXXXXXXXX">Nagad: 01XXXXXXXXX</a></li>
+            <li><a href="tel:01XXXXXXXXX">Rocket: 01XXXXXXXXX</a></li>
+            <li>Bank Account: Account No XXXXXXXX, Bank Name</li>
+        </ul>
+
+        <input type="text" wire:model="trx_id" placeholder="Enter Transaction ID" class="form-input mt-2 w-full">
+        @error('trx_id') <span class="text-red-500">{{ $message }}</span> @enderror
+
+        <button wire:click="placeCodOrder" class="btn btn-primary mt-3">
+            Submit & Place Order
+        </button>
+    </div>
+@endif
+
             <li>
               <input wire:model="payment_method" class="hidden peer" id="manual" type="radio" value="manual" />
               <label for="manual" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer

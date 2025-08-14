@@ -60,15 +60,15 @@
 
             <!-- Social Icons -->
             <div class="flex gap-3">
-                <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook"
+                <a href="https://www.facebook.com/jpdisp" target="_blank" aria-label="Facebook"
                     class="w-10 h-10 flex items-center justify-center rounded-full text-green-600 border border-green-100 hover:bg-green-100 transition">
                     <i class="fab fa-facebook-f"></i>
                 </a>
-                <a href="https://www.youtube.com/" target="_blank" aria-label="YouTube"
+                <a href="https://www.youtube.com/@juipowerdigitalips" target="_blank" aria-label="YouTube"
                     class="w-10 h-10 flex items-center justify-center rounded-full text-green-600 border border-green-100 hover:bg-green-100 transition">
                     <i class="fab fa-youtube"></i>
                 </a>
-                <a href="https://wa.me/880123456789" target="_blank" aria-label="WhatsApp"
+                <a href="https://wa.me/01713540038" target="_blank" aria-label="WhatsApp"
                     class="w-10 h-10 flex items-center justify-center rounded-full text-green-600 border border-green-100 hover:bg-green-100 transition">
                     <i class="fab fa-whatsapp"></i>
                 </a>

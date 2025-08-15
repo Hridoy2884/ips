@@ -1,164 +1,188 @@
 <div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
-  <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Checkout</h1>
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Checkout</h1>
 
-  <form wire:submit.prevent="placeOrder" enctype="multipart/form-data">
-    <div class="grid grid-cols-12 gap-4">
-      <div class="md:col-span-12 lg:col-span-8 col-span-12">
-        <!-- Shipping Address Card -->
-        <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900 mb-6">
-          <h2 class="text-xl font-bold underline text-gray-700 dark:text-white mb-2">Shipping Address</h2>
-          <div class="grid grid-cols-2 gap-4">
-            <!-- First Name -->
-            <div>
-              <label for="first_name" class="block text-gray-700 dark:text-white mb-1">First Name</label>
-              <input wire:model="first_name" id="first_name" type="text" 
-                class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('first_name') border-red-500 @enderror">
-              @error('first_name') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-            </div>
-            <!-- Last Name -->
-            <div>
-              <label for="last_name" class="block text-gray-700 dark:text-white mb-1">Last Name</label>
-              <input wire:model="last_name" id="last_name" type="text" 
-                class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('last_name') border-red-500 @enderror">
-              @error('last_name') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-            </div>
-          </div>
-          <!-- Phone -->
-          <div class="mt-4">
-            <label for="phone" class="block text-gray-700 dark:text-white mb-1">Phone</label>
-            <input wire:model="phone" id="phone" type="text" 
-              class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('phone') border-red-500 @enderror">
-            @error('phone') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-          </div>
-          <!-- Address -->
-          <div class="mt-4">
-            <label for="street_address" class="block text-gray-700 dark:text-white mb-1">Address</label>
-            <input wire:model="street_address" id="street_address" type="text" 
-              class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('street_address') border-red-500 @enderror">
-            @error('street_address') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-          </div>
-          <!-- City -->
-          <div class="mt-4">
-            <label for="city" class="block text-gray-700 dark:text-white mb-1">City</label>
-            <input wire:model="city" id="city" type="text" 
-              class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('city') border-red-500 @enderror">
-            @error('city') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-          </div>
-          <!-- District & ZIP -->
-          <div class="grid grid-cols-2 gap-4 mt-4">
-            <div>
-              <label for="district" class="block text-gray-700 dark:text-white mb-1">District</label>
-              <input wire:model="district" id="district" type="text" 
-                class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('district') border-red-500 @enderror">
-              @error('district') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-            </div>
-            <div>
-              <label for="zip_code" class="block text-gray-700 dark:text-white mb-1">ZIP Code</label>
-              <input wire:model="zip_code" id="zip_code" type="text" 
-                class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('zip_code') border-red-500 @enderror">
-              @error('zip_code') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-            </div>
-          </div>
-        </div>
-        <!-- End Shipping Address Card -->
+    <form wire:submit.prevent="placeOrder" enctype="multipart/form-data">
+        <div class="grid grid-cols-12 gap-4">
+            <!-- Left: Shipping + Payment -->
+            <div class="md:col-span-12 lg:col-span-8 col-span-12">
+                <!-- Shipping Address Card -->
+                <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900 mb-6">
+                    <h2 class="text-xl font-bold underline text-gray-700 dark:text-white mb-2">Shipping Address</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="first_name" class="block text-gray-700 dark:text-white mb-1">First Name</label>
+                            <input wire:model="first_name" id="first_name" type="text"
+                                class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('first_name') border-red-500 @enderror">
+                            @error('first_name')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="last_name" class="block text-gray-700 dark:text-white mb-1">Last Name</label>
+                            <input wire:model="last_name" id="last_name" type="text"
+                                class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('last_name') border-red-500 @enderror">
+                            @error('last_name')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
 
-        <!-- Payment Method Card -->
-        <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
-          <div class="text-lg font-semibold mb-4">Select Payment Method</div>
-          <ul class="grid w-full gap-6 md:grid-cols-2">
-            <div>
-<label>
-    <input type="radio" wire:model="payment_method" value="cod"> Cash on Delivery
-</label>
-<label class="ml-4">
-    <input type="radio" wire:model="payment_method" value="manual"> Manual Payment
-</label>
+                    <div class="mt-4">
+                        <label for="phone" class="block text-gray-700 dark:text-white mb-1">Phone</label>
+                        <input wire:model="phone" id="phone" type="text"
+                            class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('phone') border-red-500 @enderror">
+                        @error('phone')
+                            <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                        @enderror
+                    </div>
 
-{{-- Dynamic COD instructions --}}
-@if($payment_method === 'cod')
-    <div class="cod-info mt-4 p-4 border rounded bg-gray-50">
-        <p>Please pay <strong>15% of your order total</strong> using one of the following methods and enter your transaction ID:</p>
+                    <div class="mt-4">
+                        <label for="street_address" class="block text-gray-700 dark:text-white mb-1">Address</label>
+                        <input wire:model="street_address" id="street_address" type="text"
+                            class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('street_address') border-red-500 @enderror">
+                        @error('street_address')
+                            <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                        @enderror
+                    </div>
 
-        <ul class="list-disc pl-5 mt-2">
-            <li><a href="tel:01XXXXXXXXX">bKash: 01XXXXXXXXX</a></li>
-            <li><a href="tel:01XXXXXXXXX">Nagad: 01XXXXXXXXX</a></li>
-            <li><a href="tel:01XXXXXXXXX">Rocket: 01XXXXXXXXX</a></li>
-            <li>Bank Account: Account No XXXXXXXX, Bank Name</li>
-        </ul>
+                    <div class="mt-4">
+                        <label for="city" class="block text-gray-700 dark:text-white mb-1">City</label>
+                        <input wire:model="city" id="city" type="text"
+                            class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('city') border-red-500 @enderror">
+                        @error('city')
+                            <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                        @enderror
+                    </div>
 
-        <input type="text" wire:model="trx_id" placeholder="Enter Transaction ID" class="form-input mt-2 w-full">
-        @error('trx_id') <span class="text-red-500">{{ $message }}</span> @enderror
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label for="district" class="block text-gray-700 dark:text-white mb-1">District</label>
+                            <input wire:model="district" id="district" type="text"
+                                class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('district') border-red-500 @enderror">
+                            @error('district')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="zip_code" class="block text-gray-700 dark:text-white mb-1">ZIP Code</label>
+                            <input wire:model="zip_code" id="zip_code" type="text"
+                                class="w-full rounded-lg border py-2 px-3 dark:bg-gray-700 dark:text-white dark:border-none @error('zip_code') border-red-500 @enderror">
+                            @error('zip_code')
+                                <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <!-- End Shipping Address -->
 
-        <button wire:click="placeCodOrder" class="btn btn-primary mt-3">
-            Submit & Place Order
-        </button>
+                <!-- Payment Method Card -->
+         <!-- Payment Method Card -->
+<div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
+    <div class="text-lg font-semibold mb-4">Select Payment Method</div>
+
+    <div class="grid grid-cols-2 gap-4 mb-4">
+        <!-- COD -->
+        <label
+            class="flex items-center gap-2 p-3 border rounded cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition">
+            <input type="radio" wire:model="payment_method" value="cod" class="mr-2">
+            <span class="text-gray-700 dark:text-white font-semibold">Cash on Delivery</span>
+        </label>
+
+        <!-- Manual -->
+        <label
+            class="flex items-center gap-2 p-3 border rounded cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition">
+            <input type="radio" wire:model="payment_method" value="manual" class="mr-2">
+            <span class="text-gray-700 dark:text-white font-semibold">Manual Payment</span>
+        </label>
     </div>
-@endif
 
-            <li>
-              <input wire:model="payment_method" class="hidden peer" id="manual" type="radio" value="manual" />
-              <label for="manual" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer
-                dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100
-                dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
-                <div class="block w-full text-lg font-semibold">Manual Payment (bKash/Nagad/Rocket/Bank)</div>
-              </label>
-            </li>
-          </ul>
-          @error('payment_method')
-          <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
-          @enderror
+    {{-- COD Payment Section --}}
+    @if ($payment_method === 'cod')
+        <div class="mt-4 p-4 border rounded bg-gray-50">
+            <p>Please pay <strong>15% of your order total</strong> using one of the following methods and enter your transaction ID:</p>
 
-          @if($payment_method === 'manual')
-          <div class="mt-4">
+            <ul class="list-none mt-3 space-y-2">
+                <li>
+                    <p class="font-semibold">Pay to this number:</p>
+                    <p class="text-xl font-bold text-green-600">01713540038</p>
+                    <p class="text-sm text-gray-600">Use bKash / Nagad / Rocket to send the payment, then enter the transaction ID below</p>
+                </li>
+
+                <h3 class="text-lg font-bold mt-4">Pay with Bank Account</h3>
+                <ul class="space-y-1 mt-2">
+                    <li>MD Shohag: 1231510139529, DBBL</li>
+                    <li>JUI ELECTRIC: 2053722710001, Brac Bank</li>
+                    <li>MD SHOHAG: 20503240202184517, IBBL</li>
+                </ul>
+            </ul>
+
+            <input type="text" wire:model="transaction_id" placeholder="Enter Transaction ID" class="form-input mt-2 w-full">
+            @error('transaction_id')
+                <span class="text-red-500">{{ $message }}</span>
+            @enderror
+        </div>
+    @endif
+
+    {{-- Manual Payment Section --}}
+    @if ($payment_method === 'manual')
+        <div class="mt-4">
             <label for="transaction_id" class="block mb-1">Transaction ID</label>
-            <input wire:model="transaction_id" id="transaction_id" type="text" class="w-full rounded border p-2" />
-            @error('transaction_id') <span class="text-red-600">{{ $message }}</span> @enderror
-          </div>
+            <input wire:model="transaction_id" id="transaction_id" type="text"
+                   class="w-full rounded border p-2" />
+            @error('transaction_id')
+                <span class="text-red-600">{{ $message }}</span>
+            @enderror
+        </div>
 
-          <div class="mt-4">
+        <div class="mt-4">
             <label for="payment_proof" class="block mb-1">Upload Payment Proof (optional)</label>
-            <input wire:model="payment_proof" id="payment_proof" type="file" accept="image/*" class="w-full" />
-            @error('payment_proof') <span class="text-red-600">{{ $message }}</span> @enderror
+            <input wire:model="payment_proof" id="payment_proof" type="file" accept="image/*"
+                   class="w-full" />
+            @error('payment_proof')
+                <span class="text-red-600">{{ $message }}</span>
+            @enderror
 
             @if ($payment_proof)
-            <img src="{{ $payment_proof->temporaryUrl() }}" class="mt-2 max-w-xs rounded" />
+                <img src="{{ $payment_proof->temporaryUrl() }}" class="mt-2 max-w-xs rounded" />
             @endif
-          </div>
-          @endif
         </div>
-        <!-- End Payment Method Card -->
-      </div>
-
-      <!-- Order Summary -->
-      <div class="md:col-span-12 lg:col-span-4 col-span-12">
-        <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
-          <div class="text-xl font-bold underline text-gray-700 dark:text-white mb-2">ORDER SUMMARY</div>
-          <div class="flex justify-between mb-2 font-bold">
-            <span>Subtotal</span>
-            <span>{{ Number::currency($grand_total, 'BDT') }}</span>
-          </div>
-
-          @if($payment_method === 'cod' && $advance_amount > 0)
-          <div class="flex justify-between mb-2 font-bold text-blue-700">
-            <span>Advance Payment Required (15%)</span>
-            <span>{{ Number::currency($advance_amount, 'BDT') }}</span>
-          </div>
-          @endif
-
-          <hr class="bg-slate-400 my-4 h-1 rounded" />
-
-          <div class="flex justify-between mb-2 font-bold">
-            <span>Grand Total</span>
-            <span>{{ Number::currency($grand_total, 'BDT') }}</span>
-          </div>
-        </div>
-
-        <button type="submit" class="bg-green-500 mt-4 w-full p-3 rounded-lg text-lg text-white hover:bg-green-600">
-          <span wire:loading.remove>Place Order</span>
-          <span wire:loading>Processing...</span>
-        </button>
-      </div>
-      <!-- End Order Summary -->
-    </div>
-  </form>
+    @endif
 </div>
+
+
+            <!-- Right: Order Summary -->
+            <div class="md:col-span-12 lg:col-span-4 col-span-12">
+                <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
+                    <div class="text-xl font-bold underline text-gray-700 dark:text-white mb-2">ORDER SUMMARY</div>
+                    <div class="flex justify-between mb-2 font-bold">
+                        <span>Subtotal</span>
+                        <span>{{ Number::currency($grand_total, 'BDT') }}</span>
+                    </div>
+
+                    @if ($payment_method === 'cod' && $advance_amount > 0)
+                        <div class="flex justify-between mb-2 font-bold text-blue-700">
+                            <span>Advance Payment Required (15%)</span>
+                            <span>{{ Number::currency($advance_amount, 'BDT') }}</span>
+                        </div>
+                    @endif
+
+                    <hr class="bg-slate-400 my-4 h-1 rounded" />
+
+                    <div class="flex justify-between mb-2 font-bold">
+                        <span>Grand Total</span>
+                        <span>{{ Number::currency($grand_total, 'BDT') }}</span>
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="bg-green-500 mt-4 w-full p-3 rounded-lg text-lg text-white hover:bg-green-600">
+                    <span wire:loading.remove>Place Order</span>
+                    <span wire:loading>Processing...</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{{-- Include Alpine.js for smooth scroll --}}
+<script src="//unpkg.com/alpinejs" defer></script>

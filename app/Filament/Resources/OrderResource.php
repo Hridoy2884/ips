@@ -113,19 +113,19 @@ class OrderResource extends Resource
                         // Manual Payment Fields
                         Forms\Components\TextInput::make('transaction_id')
                             ->label('Transaction ID')
-                            ->visible(fn (callable $get) => $get('payment_method') === 'manual')
-                            ->required(fn (callable $get) => $get('payment_method') === 'manual'),
+                            ->visible(fn(callable $get) => $get('payment_method') === 'manual')
+                            ->required(fn(callable $get) => $get('payment_method') === 'manual'),
 
                         Forms\Components\FileUpload::make('payment_proof')
                             ->label('Payment Proof')
                             ->image()
-                            ->visible(fn (callable $get) => $get('payment_method') === 'manual')
+                            ->visible(fn(callable $get) => $get('payment_method') === 'manual')
                             ->nullable(),
 
                         // Advance Amount placeholder and hidden input
                         Placeholder::make('advance_amount_placeholder')
                             ->label('Advance Amount (15%)')
-                            ->content(fn (callable $get) => 'BDT ' . number_format($get('advance_amount') ?? 0, 2))
+                            ->content(fn(callable $get) => 'BDT ' . number_format($get('advance_amount') ?? 0, 2))
                             ->columnSpanFull(),
 
                         Hidden::make('advance_amount')->default(0),
@@ -224,6 +224,7 @@ class OrderResource extends Resource
                     ->searchable()
                     ->label('Customer'),
 
+
                 TextColumn::make('grand_total')
                     ->sortable()
                     ->numeric()
@@ -234,6 +235,14 @@ class OrderResource extends Resource
                     ->money('BDT')
                     ->sortable()
                     ->searchable(),
+
+                    
+                TextColumn::make('transaction_id')
+                    ->label('Transaction ID')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false), // Always visible
+
 
                 TextColumn::make('payment_method')
                     ->sortable()

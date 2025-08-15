@@ -65,50 +65,56 @@ class CheckoutPage extends Component
         return round($total, 2);
     }
 
-    public function placeOrder()
-    {
-        $this->validate();
+public function placeOrder()
+{
+    $this->validate();
 
-        $cart_items = CartManagement::getCartItemsFromCookie();
+    $cart_items = CartManagement::getCartItemsFromCookie();
 
-        $order = new Order();
-        $order->user_id = auth()->user()->id;
-        $order->grand_total = CartManagement::calculateGrandTotal($cart_items);
-        $order->advance_amount = $this->advance_amount;
-        $order->payment_method = $this->payment_method;
-        $order->payment_status = 'pending';
-        $order->transaction_id = $this->transaction_id;
+   
+   if ($this->payment_method === 'manual' || $this->payment_method === 'cod') {
+    $rules['transaction_id'] = 'required|string|max:255';
+}
 
-        if ($this->payment_method === 'manual' && $this->payment_proof) {
-            $order->payment_proof = $this->payment_proof->store('payment_proofs', 'public');
-        }
 
-        $order->currency = 'BDT';
-        $order->shipping_amount = 0;
-        $order->shipping_method = 'none';
-        $order->notes = 'Order placed by ' . auth()->user()->name;
-        $order->save();
+    $order = new Order();
+    $order->user_id = auth()->user()->id;
+    $order->grand_total = CartManagement::calculateGrandTotal($cart_items);
+    $order->advance_amount = $this->advance_amount;
+    $order->payment_method = $this->payment_method;
+    $order->payment_status = 'pending';
+    $order->transaction_id = $this->transaction_id;
 
-        $address = new Address();
-        $address->order_id = $order->id;
-        $address->first_name = $this->first_name;
-        $address->last_name = $this->last_name;
-        $address->phone = $this->phone;
-        $address->city = $this->city;
-        $address->street_address = $this->street_address;
-        $address->zip_code = $this->zip_code;
-        $address->district = $this->district;
-        $address->save();
-
-        $order->orderItems()->createMany($cart_items);
-
-        CartManagement::clearCartItems();
-
-        // Send order placed email
-        Mail::to(auth()->user()->email)->send(new OrderPlaced($order));
-
-        return redirect()->route('success', ['transaction_id' => $order->transaction_id]);
+    if ($this->payment_method === 'manual' && $this->payment_proof) {
+        $order->payment_proof = $this->payment_proof->store('payment_proofs', 'public');
     }
+
+    $order->currency = 'BDT';
+    $order->shipping_amount = 0;
+    $order->shipping_method = 'none';
+    $order->notes = 'Order placed by ' . auth()->user()->name;
+    $order->save();
+
+    $address = new Address();
+    $address->order_id = $order->id;
+    $address->first_name = $this->first_name;
+    $address->last_name = $this->last_name;
+    $address->phone = $this->phone;
+    $address->city = $this->city;
+    $address->street_address = $this->street_address;
+    $address->zip_code = $this->zip_code;
+    $address->district = $this->district;
+    $address->save();
+
+    $order->orderItems()->createMany($cart_items);
+
+    CartManagement::clearCartItems();
+
+    Mail::to(auth()->user()->email)->send(new OrderPlaced($order));
+
+    return redirect()->route('success', ['transaction_id' => $order->transaction_id]);
+}
+
 
     public function render()
     {

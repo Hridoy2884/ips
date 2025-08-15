@@ -57,8 +57,8 @@
                             class="w-full h-1 mb-4 bg-green-100 rounded cursor-pointer" max="50000" value="30000"
                             step="1000">
                         <div class="flex justify-between">
-                            <span class="text-green-600 font-bold">{{ Number::currency(1000, 'BDT') }}</span>
-                            <span class="text-green-600 font-bold">{{ Number::currency(50000, 'BDT') }}</span>
+                            <span class="text-green-600 font-bold">{{ Number::currency(100, 'BDT') }}</span>
+                            <span class="text-green-600 font-bold">{{ Number::currency(500000, 'BDT') }}</span>
                         </div>
                     </div>
 

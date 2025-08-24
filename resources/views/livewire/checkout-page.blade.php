@@ -138,13 +138,36 @@
     <div class="mt-4 p-4 border rounded bg-gray-50">
         <p class="font-semibold text-lg">Payment Instruction</p>
 
-        <p class="text-red-600 mt-2">
-            Please complete your payment through <strong>{{ ucfirst($payment_method) }} (Send Money)</strong> first, 
-            then fill up the form below. 
-            Also note that <strong>1.85% {{ ucfirst($payment_method) }} "SEND MONEY"</strong> cost will be added with net price. 
-            Total amount you need to send us: 
-            <span class="font-bold text-black">৳ {{ number_format($total_with_fee, 2) }}</span>
-        </p>
+<p class="text-red-600 mt-2">
+    Please complete your payment through 
+    <strong>{{ ucfirst($payment_method) }} (Send Money)</strong> first, 
+    then fill up the form below. 
+    Also note that <strong>1.85% {{ ucfirst($payment_method) }} "SEND MONEY"</strong> cost will be added with net price. 
+    Total amount you need to send us: 
+    <span class="font-bold text-black">৳ {{ number_format($total_with_fee, 2) }}</span>.<br>
+    
+    <strong>{{ ucfirst($payment_method) }} Number:</strong> 
+    <span 
+        id="paymentNumber" 
+        class="font-bold text-black cursor-pointer underline hover:text-blue-600" 
+        onclick="copyPaymentNumber()"
+        title="Click to copy"
+    >
+        01713787848
+    </span>
+</p>
+
+<script>
+    function copyPaymentNumber() {
+        const number = document.getElementById('paymentNumber').innerText;
+        navigator.clipboard.writeText(number).then(() => {
+            alert('Payment number copied: ' + number);
+        }).catch(err => {
+            alert('Failed to copy number');
+        });
+    }
+</script>
+
 
         <div class="mt-3">
             <label class="block mb-1">Transaction ID</label>

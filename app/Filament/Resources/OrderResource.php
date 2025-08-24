@@ -17,8 +17,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -45,19 +43,20 @@ class OrderResource extends Resource
 
                         Select::make('payment_method')
                             ->options([
-                                'stripe' => 'Stripe',
-                                'bkash' => 'Bkash',
+                                'cod' => 'Cash On Delivery',
+                                'bkash' => 'bKash',
                                 'nagad' => 'Nagad',
                                 'rocket' => 'Rocket',
-                                'cod' => 'Cash On Delivery',
+                                'bank' => 'Bank Transfer',
                                 'manual' => 'Manual Payment',
                             ])
-                            ->required(),
+                            ->required()
+                            ->reactive(),
 
                         Select::make('payment_status')
                             ->options([
                                 'pending' => 'Pending',
-                                'adcanced' => 'Advanced',
+                                'advanced' => 'Advanced',
                                 'paid' => 'Paid',
                                 'failed' => 'Failed',
                             ])
@@ -75,21 +74,7 @@ class OrderResource extends Resource
                             ->required()
                             ->default('new')
                             ->inline()
-                            ->label('Order Status')
-                            ->colors([
-                                'new' => 'info',
-                                'processing' => 'warning',
-                                'shipped' => 'success',
-                                'delivered' => 'success',
-                                'canceled' => 'danger',
-                            ])
-                            ->icons([
-                                'new' => 'heroicon-m-sparkles',
-                                'processing' => 'heroicon-m-arrow-path',
-                                'shipped' => 'heroicon-m-truck',
-                                'delivered' => 'heroicon-m-check-circle',
-                                'canceled' => 'heroicon-m-x-circle',
-                            ]),
+                            ->label('Order Status'),
 
                         Select::make('currency')
                             ->options([
@@ -101,31 +86,40 @@ class OrderResource extends Resource
 
                         Select::make('shipping_method')
                             ->options([
+                                'A.J.R Parcel' => 'A.J.R Parcel & Courier Service Ltd',
+                                'S.A Paribahan' => 'S.A Paribahan',
+                                'steadfast' => 'Steadfast',
                                 'paperfly' => 'Paperfly',
-                                'steadfast' => 'SteadFast',
-                                'redx' => 'REDX',
+                                'redx' => 'RedX',
+                                'pathao' => 'Pathao',
+                                'Shodagor Express' => 'Shodagor Express',
+                                'Ahmed Parcel' => 'Ahmed Parcel',
+                                'Sundarban Courier' => 'Sundarban Courier Service',
                             ])
                             ->required(),
 
-                        Textarea::make('notes')
-                            ->columnSpanFull(),
+                        Textarea::make('notes')->columnSpanFull(),
 
-                        // Manual Payment Fields
                         Forms\Components\TextInput::make('transaction_id')
                             ->label('Transaction ID')
-                            ->visible(fn(callable $get) => $get('payment_method') === 'manual')
-                            ->required(fn(callable $get) => $get('payment_method') === 'manual'),
+                            ->visible(fn(callable $get) => in_array($get('payment_method'), ['cod','manual','bank','bkash','nagad','rocket']))
+                            ->required(fn(callable $get) => in_array($get('payment_method'), ['cod','manual','bank','bkash','nagad','rocket'])),
 
                         Forms\Components\FileUpload::make('payment_proof')
                             ->label('Payment Proof')
                             ->image()
-                            ->visible(fn(callable $get) => $get('payment_method') === 'manual')
-                            ->nullable(),
+                            ->nullable()
+                            ->visible(fn(callable $get) => in_array($get('payment_method'), ['manual','bank','bkash','nagad','rocket'])),
 
-                        // Advance Amount placeholder and hidden input
                         Placeholder::make('advance_amount_placeholder')
-                            ->label('Advance Amount (15%)')
-                            ->content(fn(callable $get) => 'BDT ' . number_format($get('advance_amount') ?? 0, 2))
+                            ->label('Advance Amount (15% for COD)')
+                            ->content(function(Get $get) {
+                                $advance = 0;
+                                if($get('payment_method') === 'cod' && $get('grand_total')){
+                                    $advance = round($get('grand_total') * 0.15, 2);
+                                }
+                                return 'BDT ' . number_format($advance, 2);
+                            })
                             ->columnSpanFull(),
 
                         Hidden::make('advance_amount')->default(0),
@@ -144,36 +138,33 @@ class OrderResource extends Resource
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                     ->columnSpan(4)
                                     ->reactive()
-                                    ->afterStateUpdated(
-                                        function (callable $set, $state, callable $get) {
-                                            $product = \App\Models\Product::find($state);
-                                            if ($product) {
-                                                $set('unit_amount', $product->price);
-                                                $set('total_amount', $product->price * ($get('quantity') ?? 1));
-                                            }
+                                    ->afterStateUpdated(function (callable $set, $state, callable $get) {
+                                        $product = \App\Models\Product::find($state);
+                                        if($product){
+                                            $set('unit_amount', $product->price);
+                                            $set('total_amount', $product->price * ($get('quantity') ?? 1));
                                         }
-                                    ),
+                                    }),
 
                                 Forms\Components\TextInput::make('quantity')
                                     ->numeric()
                                     ->required()
                                     ->minValue(1)
                                     ->default(1)
-                                    ->label('Quantity')
                                     ->columnSpan(2)
                                     ->reactive()
-                                    ->afterStateUpdated(
-                                        function (callable $set, $state, callable $get) {
-                                            $unit_amount = $get('unit_amount');
-                                            $set('total_amount', $unit_amount * ($state ?? 1));
-                                        }
-                                    ),
+                                    ->afterStateUpdated(function(callable $set, $state, callable $get){
+                                        $unit_amount = $get('unit_amount');
+                                        $set('total_amount', $unit_amount * ($state ?? 1));
+                                    }),
+
                                 Forms\Components\TextInput::make('unit_amount')
                                     ->numeric()
                                     ->required()
                                     ->disabled()
                                     ->dehydrated()
                                     ->columnSpan(3),
+
                                 Forms\Components\TextInput::make('total_amount')
                                     ->numeric()
                                     ->required()
@@ -184,33 +175,33 @@ class OrderResource extends Resource
 
                         Placeholder::make('grand_total_placeholder')
                             ->label('Grand Total Amount')
-                            ->content(function (Get $get, Set $set) {
+                            ->content(function(Get $get, Set $set){
                                 $total = 0;
-
-                                if (!$repeaters = $get('orderItems')) {
-                                    return 'BDT ' . number_format($total, 2);
+                                $repeaters = $get('orderItems') ?? [];
+                                foreach($repeaters as $key => $repeater){
+                                    $total += (float)$get("orderItems.{$key}.total_amount");
                                 }
 
-                                foreach ($repeaters as $key => $repeater) {
-                                    $total += (float) $get("orderItems.{$key}.total_amount");
-                                }
-
-                                // Set the grand_total field with the computed total
                                 $set('grand_total', $total);
 
-                                // Calculate advance_amount as 15% of grand_total if payment method is cod
-                                if ($get('payment_method') === 'cod') {
+                                if($get('payment_method') === 'cod'){
                                     $set('advance_amount', round($total * 0.15, 2));
                                 } else {
                                     $set('advance_amount', 0);
+                                }
+
+                                if($get('payment_method') === 'bkash'){
+                                    $set('total_with_fee', round($total * 1.0185, 2));
+                                } else {
+                                    $set('total_with_fee', $total);
                                 }
 
                                 return 'BDT ' . number_format($total, 2);
                             }),
 
                         Hidden::make('grand_total')->default(0),
+                        Hidden::make('total_with_fee')->default(0),
                     ])->columns(1),
-
                 ])->columnSpanFull(),
             ]);
     }
@@ -219,85 +210,31 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('user.name')
-                    ->sortable()
-                    ->searchable()
-                    ->label('Customer'),
-
-
-                TextColumn::make('grand_total')
-                    ->sortable()
-                    ->numeric()
-                    ->money('BDT'),
-
-                TextColumn::make('advance_amount')
-                    ->label('Advance Amount')
-                    ->money('BDT')
-                    ->sortable()
-                    ->searchable(),
-
-                    
-                TextColumn::make('transaction_id')
-                    ->label('Transaction ID')
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: false), // Always visible
-
-
-                TextColumn::make('payment_method')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('payment_status')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('currency')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('shipping_method')
-                    ->sortable()
-                    ->searchable(),
-
-                SelectColumn::make('status')
-                    ->options([
-                        'new' => 'New',
-                        'processing' => 'Processing',
-                        'shipped' => 'Shipped',
-                        'delivered' => 'Delivered',
-                        'canceled' => 'Canceled',
-                    ])
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('user.name')->label('Customer')->sortable()->searchable(),
+                TextColumn::make('grand_total')->sortable()->money('BDT'),
+                TextColumn::make('advance_amount')->sortable()->money('BDT'),
+                TextColumn::make('total_with_fee')->label('Total with Fee')->money('BDT')->sortable(),
+                TextColumn::make('transaction_id')->label('Transaction ID')->sortable()->searchable(),
+                TextColumn::make('payment_method')->sortable()->searchable(),
+                TextColumn::make('payment_status')->sortable()->searchable(),
+                TextColumn::make('currency')->sortable()->searchable(),
+                TextColumn::make('shipping_method')->sortable()->searchable(),
+                SelectColumn::make('status')->options([
+                    'new' => 'New',
+                    'processing' => 'Processing',
+                    'shipped' => 'Shipped',
+                    'delivered' => 'Delivered',
+                    'canceled' => 'Canceled',
+                ])->sortable()->searchable(),
+                TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make()
-                        ->label('Edit')
-                        ->icon('heroicon-o-pencil'),
-                    Tables\Actions\DeleteAction::make()
-                        ->label('Delete')
-                        ->icon('heroicon-o-trash')
-                        ->color('danger'),
-
-                    Tables\Actions\ViewAction::make('View')
-                        ->label('View')
-                        ->icon('heroicon-o-eye')
-                        ->color('success'),
+                    Tables\Actions\EditAction::make()->label('Edit')->icon('heroicon-o-pencil'),
+                    Tables\Actions\DeleteAction::make()->label('Delete')->icon('heroicon-o-trash')->color('danger'),
+                    Tables\Actions\ViewAction::make('View')->label('View')->icon('heroicon-o-eye')->color('success'),
                 ]),
             ])
             ->bulkActions([

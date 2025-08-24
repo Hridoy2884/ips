@@ -19,7 +19,8 @@ class CheckoutPage extends Component
     public $transaction_id;
     public $payment_proof;
 
-    public $advance_amount; // 15% COD advance
+    public $advance_amount;   // 15% COD advance
+    public $total_with_fee;   // for bkash/nagad/rocket
 
     public function mount()
     {
@@ -28,29 +29,37 @@ class CheckoutPage extends Component
             return redirect('/products');
         }
 
+        $grand_total = CartManagement::calculateGrandTotal($cart_items);
+
+        // COD 15% advance
         $this->advance_amount = $this->calculateAdvanceAmount($cart_items);
+
+        // For bKash/Nagad/Rocket add 1.85% fee
+        $this->total_with_fee = $grand_total + ($grand_total * 0.0185);
     }
 
     protected function rules()
     {
         $rules = [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'phone' => 'required',
-            'city' => 'required',
-            'street_address' => 'required',
-            'zip_code' => 'required',
-            'district' => 'required',
-            'payment_method' => 'required|in:cod,manual',
+            'first_name'      => 'required',
+            'last_name'       => 'required',
+            'phone'           => 'required',
+            'city'            => 'required',
+            'street_address'  => 'required',
+            'zip_code'        => 'required',
+            'district'        => 'required',
+            'payment_method'  => 'required|in:cod,bkash,nagad,rocket,bank',
         ];
 
-        if ($this->payment_method === 'manual') {
+        // COD requires advance transaction id
+        if ($this->payment_method === 'cod') {
             $rules['transaction_id'] = 'required|string|max:255';
-            $rules['payment_proof'] = 'nullable|image|max:2048';
         }
 
-        if ($this->payment_method === 'cod') {
-            $rules['transaction_id'] = 'required|string|max:255'; // for 15% advance
+        // Online payment methods
+        if (in_array($this->payment_method, ['bkash', 'nagad', 'rocket', 'bank'])) {
+            $rules['transaction_id'] = 'required|string|max:255';
+            $rules['payment_proof'] = 'nullable|image|max:2048';
         }
 
         return $rules;
@@ -60,71 +69,67 @@ class CheckoutPage extends Component
     {
         $total = 0;
         foreach ($cart_items as $item) {
-            $total += $item['unit_amount'] * $item['quantity'] * 0.15; // 15% advance
+            $total += $item['unit_amount'] * $item['quantity'] * 0.15; // 15%
         }
         return round($total, 2);
     }
 
-public function placeOrder()
-{
-    $this->validate();
+    public function placeOrder()
+    {
+        $this->validate();
 
-    $cart_items = CartManagement::getCartItemsFromCookie();
+        $cart_items = CartManagement::getCartItemsFromCookie();
 
-   
-   if ($this->payment_method === 'manual' || $this->payment_method === 'cod') {
-    $rules['transaction_id'] = 'required|string|max:255';
-}
+        $order = new Order();
+        $order->user_id        = auth()->user()->id;
+        $order->grand_total    = CartManagement::calculateGrandTotal($cart_items);
+        $order->advance_amount = $this->payment_method === 'cod' ? $this->advance_amount : 0;
+        $order->payment_method = $this->payment_method;
+        $order->payment_status = 'pending';
+        $order->transaction_id = $this->transaction_id;
 
+        if (in_array($this->payment_method, ['bkash','nagad','rocket','bank']) && $this->payment_proof) {
+            $order->payment_proof = $this->payment_proof->store('payment_proofs', 'public');
+        }
 
-    $order = new Order();
-    $order->user_id = auth()->user()->id;
-    $order->grand_total = CartManagement::calculateGrandTotal($cart_items);
-    $order->advance_amount = $this->advance_amount;
-    $order->payment_method = $this->payment_method;
-    $order->payment_status = 'pending';
-    $order->transaction_id = $this->transaction_id;
+        $order->currency = 'BDT';
+        $order->shipping_amount = 0;
+        $order->shipping_method = 'none';
+        $order->notes = 'Order placed by ' . auth()->user()->name;
+        $order->save();
 
-    if ($this->payment_method === 'manual' && $this->payment_proof) {
-        $order->payment_proof = $this->payment_proof->store('payment_proofs', 'public');
+        // Save address
+        $address = new Address();
+        $address->order_id = $order->id;
+        $address->first_name = $this->first_name;
+        $address->last_name = $this->last_name;
+        $address->phone = $this->phone;
+        $address->city = $this->city;
+        $address->street_address = $this->street_address;
+        $address->zip_code = $this->zip_code;
+        $address->district = $this->district;
+        $address->save();
+
+        // Save order items
+        $order->orderItems()->createMany($cart_items);
+
+        CartManagement::clearCartItems();
+
+        Mail::to(auth()->user()->email)->send(new OrderPlaced($order));
+
+        return redirect()->route('success', ['transaction_id' => $order->transaction_id]);
     }
-
-    $order->currency = 'BDT';
-    $order->shipping_amount = 0;
-    $order->shipping_method = 'none';
-    $order->notes = 'Order placed by ' . auth()->user()->name;
-    $order->save();
-
-    $address = new Address();
-    $address->order_id = $order->id;
-    $address->first_name = $this->first_name;
-    $address->last_name = $this->last_name;
-    $address->phone = $this->phone;
-    $address->city = $this->city;
-    $address->street_address = $this->street_address;
-    $address->zip_code = $this->zip_code;
-    $address->district = $this->district;
-    $address->save();
-
-    $order->orderItems()->createMany($cart_items);
-
-    CartManagement::clearCartItems();
-
-    Mail::to(auth()->user()->email)->send(new OrderPlaced($order));
-
-    return redirect()->route('success', ['transaction_id' => $order->transaction_id]);
-}
-
 
     public function render()
     {
-        $cart_items = CartManagement::getCartItemsFromCookie();
+        $cart_items  = CartManagement::getCartItemsFromCookie();
         $grand_total = CartManagement::calculateGrandTotal($cart_items);
 
         return view('livewire.checkout-page', [
-            'cart_items' => $cart_items,
-            'grand_total' => $grand_total,
-            'advance_amount' => $this->advance_amount,
+            'cart_items'      => $cart_items,
+            'grand_total'     => $grand_total,
+            'advance_amount'  => $this->advance_amount,
+            'total_with_fee'  => $this->total_with_fee,
         ]);
     }
 }

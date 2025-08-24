@@ -75,7 +75,8 @@
                                     class="w-10 h-10 flex items-center justify-center rounded-full bg-white text-blue-600 shadow hover:scale-110 hover:bg-blue-600 hover:text-white transition-all duration-300">
                                     <i class="fab fa-facebook-f text-lg"></i>
                                 </a>
-                                <a href="https://youtube.com/@juipowerdigitalips?si=kl7sETPbsRcQQID1" target="_blank" title="YouTube"
+                                <a href="https://youtube.com/@juipowerdigitalips?si=kl7sETPbsRcQQID1" target="_blank"
+                                    title="YouTube"
                                     class="w-10 h-10 flex items-center justify-center rounded-full bg-white text-red-600 shadow hover:scale-110 hover:bg-red-600 hover:text-white transition-all duration-300">
                                     <i class="fab fa-youtube text-lg"></i>
                                 </a>
@@ -83,10 +84,11 @@
                                     class="w-10 h-10 flex items-center justify-center rounded-full bg-white text-pink-500 shadow hover:scale-110 hover:bg-pink-500 hover:text-white transition-all duration-300">
                                     <i class="fab fa-instagram text-lg"></i>
                                 </a> --}}
-                                <a href="https://wa.me/01713540038" target="_blank" title="WhatsApp"
+                                <a href="https://wa.me/8801713540038" target="_blank" title="WhatsApp"
                                     class="w-10 h-10 flex items-center justify-center rounded-full bg-white text-green-500 shadow hover:scale-110 hover:bg-green-500 hover:text-white transition-all duration-300">
                                     <i class="fab fa-whatsapp text-lg"></i>
                                 </a>
+
                             </div>
 
 

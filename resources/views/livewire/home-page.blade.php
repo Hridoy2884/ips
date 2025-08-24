@@ -2,6 +2,8 @@
     {{-- Hero Section --}}
 
 
+
+
     <div class="w-full bg-white py-10 px-4 sm:px-6 lg:px-8 mx-auto max-w-[85rem]">
         <div class="grid gap-10">
 
@@ -200,50 +202,51 @@
     </script>
     {{-- script for typing effect --}}
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const textEl = document.getElementById("typing-text");
-            const cursorEl = document.getElementById("cursor");
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const textEl = document.getElementById("typing-text");
+    const cursorEl = document.getElementById("cursor");
 
-            const messages = [
-                "No.1 Solar & IPS Provider in Bangladesh",
-                "Smart, Green & Reliable Power Solutions",
-                "Powering a Sustainable Tomorrow 💡☀️"
-            ];
+    const messages = [
+        "No.1 Solar & IPS Provider in Bangladesh",
+        "Smart, Green & Reliable Power Solutions",
+        "Powering a Sustainable Tomorrow 💡☀️"
+    ];
 
-            let messageIndex = 0;
-            let charIndex = 0;
-            let isDeleting = false;
+    let messageIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
 
-            function typeEffect() {
-                const current = messages[messageIndex];
-                const visibleText = current.substring(0, charIndex);
-                textEl.textContent = visibleText;
+    function typeEffect() {
+        const current = messages[messageIndex];
+        const chars = Array.from(current); // <-- handle emojis correctly
+        const visibleText = chars.slice(0, charIndex).join('');
+        textEl.textContent = visibleText;
 
-                if (isDeleting) {
-                    charIndex--;
-                    if (charIndex === 0) {
-                        isDeleting = false;
-                        messageIndex = (messageIndex + 1) % messages.length;
-                        setTimeout(typeEffect, 700);
-                        return;
-                    }
-                } else {
-                    charIndex++;
-                    if (charIndex === current.length) {
-                        isDeleting = true;
-                        setTimeout(typeEffect, 1500);
-                        return;
-                    }
-                }
-
-                const delay = isDeleting ? 40 : 70;
-                setTimeout(typeEffect, delay);
+        if (isDeleting) {
+            charIndex--;
+            if (charIndex === 0) {
+                isDeleting = false;
+                messageIndex = (messageIndex + 1) % messages.length;
+                setTimeout(typeEffect, 700);
+                return;
             }
+        } else {
+            charIndex++;
+            if (charIndex === chars.length) {
+                isDeleting = true;
+                setTimeout(typeEffect, 1500);
+                return;
+            }
+        }
 
-            typeEffect();
-        });
-    </script>
+        const delay = isDeleting ? 40 : 70;
+        setTimeout(typeEffect, delay);
+    }
+
+    typeEffect();
+});
+</script>
 
 
     {{-- end script for typing effect --}}
@@ -425,3 +428,5 @@
 
 
     </div>
+
+    

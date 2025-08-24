@@ -76,78 +76,132 @@
                 <!-- End Shipping Address -->
 
                 <!-- Payment Method Card -->
-         <!-- Payment Method Card -->
 <div class="bg-white rounded-xl shadow p-4 sm:p-7 dark:bg-slate-900">
+
     <div class="text-lg font-semibold mb-4">Select Payment Method</div>
 
+    {{-- Payment Method Radio Buttons --}}
     <div class="grid grid-cols-2 gap-4 mb-4">
-        <!-- COD -->
-        <label
-            class="flex items-center gap-2 p-3 border rounded cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition">
-            <input type="radio" wire:model="payment_method" value="cod" class="mr-2">
+        <label class="flex items-center gap-2 p-3 border rounded cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition">
+            <input type="radio" wire:model="payment_method" name="payment_method" value="cod">
             <span class="text-gray-700 dark:text-white font-semibold">Cash on Delivery</span>
         </label>
 
-        <!-- Manual -->
-        <label
-            class="flex items-center gap-2 p-3 border rounded cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition">
-            <input type="radio" wire:model="payment_method" value="manual" class="mr-2">
-            <span class="text-gray-700 dark:text-white font-semibold">Manual Payment</span>
+        <label class="flex items-center gap-2 p-3 border rounded cursor-pointer hover:border-pink-500 hover:bg-pink-50 transition">
+            <input type="radio" wire:model="payment_method" name="payment_method" value="bkash">
+            <span class="text-gray-700 dark:text-white font-semibold">bKash</span>
+        </label>
+
+        <label class="flex items-center gap-2 p-3 border rounded cursor-pointer hover:border-orange-500 hover:bg-orange-50 transition">
+            <input type="radio" wire:model="payment_method" name="payment_method" value="nagad">
+            <span class="text-gray-700 dark:text-white font-semibold">Nagad</span>
+        </label>
+
+        <label class="flex items-center gap-2 p-3 border rounded cursor-pointer hover:border-purple-500 hover:bg-purple-50 transition">
+            <input type="radio" wire:model="payment_method" name="payment_method" value="rocket">
+            <span class="text-gray-700 dark:text-white font-semibold">Rocket</span>
+        </label>
+
+        <label class="flex items-center gap-2 p-3 border rounded cursor-pointer hover:border-green-500 hover:bg-green-50 transition">
+            <input type="radio" wire:model="payment_method" name="payment_method" value="bank">
+            <span class="text-gray-700 dark:text-white font-semibold">Bank Transfer</span>
         </label>
     </div>
 
-    {{-- COD Payment Section --}}
-    @if ($payment_method === 'cod')
+    {{-- COD Section --}}
+    @if($payment_method === 'cod')
         <div class="mt-4 p-4 border rounded bg-gray-50">
-            <p>Please pay <strong>15% of your order total</strong> using one of the following methods and enter your transaction ID:</p>
+            <p>Please pay <strong>15% of your order total</strong> using one of the methods below and enter your transaction ID:</p>
 
             <ul class="list-none mt-3 space-y-2">
                 <li>
-                    <p class="font-semibold">Pay to this number:</p>
+                    <p class="font-semibold">Send Money to:</p>
                     <p class="text-xl font-bold text-green-600">01713540038</p>
-                    <p class="text-sm text-gray-600">Use bKash / Nagad / Rocket to send the payment, then enter the transaction ID below</p>
+                    <p class="text-sm text-gray-600">bKash / Nagad / Rocket</p>
                 </li>
-
-                <h3 class="text-lg font-bold mt-4">Pay with Bank Account</h3>
-                <ul class="space-y-1 mt-2">
+                <h3 class="text-lg font-bold mt-4">Bank Accounts</h3>
+                <ul class="space-y-1 mt-2 text-gray-700">
                     <li>MD Shohag: 1231510139529, DBBL</li>
                     <li>JUI ELECTRIC: 2053722710001, Brac Bank</li>
                     <li>MD SHOHAG: 20503240202184517, IBBL</li>
                 </ul>
             </ul>
 
-            <input type="text" wire:model="transaction_id" placeholder="Enter Transaction ID" class="form-input mt-2 w-full">
-            @error('transaction_id')
-                <span class="text-red-500">{{ $message }}</span>
-            @enderror
+            <div class="mt-3">
+                <label class="block mb-1">Transaction ID</label>
+                <input type="text" wire:model="transaction_id" class="w-full rounded border p-2" placeholder="Enter Transaction ID">
+                @error('transaction_id') <span class="text-red-500">{{ $message }}</span> @enderror
+            </div>
         </div>
-    @endif
+@elseif(in_array($payment_method, ['bkash','nagad','rocket']))
+    {{-- Online Payment Section --}}
+    <div class="mt-4 p-4 border rounded bg-gray-50">
+        <p class="font-semibold text-lg">Payment Instruction</p>
 
-    {{-- Manual Payment Section --}}
-    @if ($payment_method === 'manual')
-        <div class="mt-4">
-            <label for="transaction_id" class="block mb-1">Transaction ID</label>
-            <input wire:model="transaction_id" id="transaction_id" type="text"
-                   class="w-full rounded border p-2" />
-            @error('transaction_id')
-                <span class="text-red-600">{{ $message }}</span>
-            @enderror
+        <p class="text-red-600 mt-2">
+            Please complete your payment through <strong>{{ ucfirst($payment_method) }} (Send Money)</strong> first, 
+            then fill up the form below. 
+            Also note that <strong>1.85% {{ ucfirst($payment_method) }} "SEND MONEY"</strong> cost will be added with net price. 
+            Total amount you need to send us: 
+            <span class="font-bold text-black">৳ {{ number_format($total_with_fee, 2) }}</span>
+        </p>
+
+        <div class="mt-3">
+            <label class="block mb-1">Transaction ID</label>
+            <input type="text" wire:model="transaction_id" class="w-full rounded border p-2" placeholder="Enter Transaction ID">
+            @error('transaction_id') <span class="text-red-600">{{ $message }}</span> @enderror
         </div>
 
         <div class="mt-4">
-            <label for="payment_proof" class="block mb-1">Upload Payment Proof (optional)</label>
-            <input wire:model="payment_proof" id="payment_proof" type="file" accept="image/*"
-                   class="w-full" />
-            @error('payment_proof')
-                <span class="text-red-600">{{ $message }}</span>
-            @enderror
+            <label class="block mb-1">Upload Payment Proof (optional)</label>
+            <input type="file" wire:model="payment_proof" accept="image/*" class="w-full">
+            @error('payment_proof') <span class="text-red-600">{{ $message }}</span> @enderror
 
-            @if ($payment_proof)
-                <img src="{{ $payment_proof->temporaryUrl() }}" class="mt-2 max-w-xs rounded" />
+            @if($payment_proof)
+                <img src="{{ $payment_proof->temporaryUrl() }}" class="mt-2 max-w-xs rounded border" />
             @endif
         </div>
+    </div>
+
+    @elseif($payment_method === 'bank')
+        {{-- Bank Transfer Section --}}
+        <div class="mt-4 p-4 border rounded bg-gray-50">
+            <p class="font-semibold text-lg">Bank Transfer Information</p>
+
+            <ul class="list-disc ml-5 mt-2 space-y-1 text-gray-700">
+                <li>MD Shohag: 1231510139529, DBBL</li>
+                <li>JUI ELECTRIC: 2053722710001, Brac Bank</li>
+                <li>MD SHOHAG: 20503240202184517, IBBL</li>
+            </ul>
+
+            <div class="mt-4">
+                <label class="block mb-1">Transaction ID</label>
+                <input type="text" wire:model="transaction_id" class="w-full rounded border p-2" placeholder="Enter Transaction ID">
+                @error('transaction_id') <span class="text-red-600">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="mt-4">
+                <label class="block mb-1">Upload Payment Proof</label>
+                <input type="file" wire:model="payment_proof" accept="image/*" class="w-full">
+                @error('payment_proof') <span class="text-red-600">{{ $message }}</span> @enderror
+
+                @if($payment_proof)
+                    <img src="{{ $payment_proof->temporaryUrl() }}" class="mt-2 max-w-xs rounded border" />
+                @endif
+            </div>
+        </div>
     @endif
+
 </div>
+
+
+
+
+
+
+  <!-- Payment Method Card end-->
+
+
 
 
             <!-- Right: Order Summary -->

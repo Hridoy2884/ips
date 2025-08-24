@@ -13,6 +13,22 @@
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            AOS.init({
+                duration: 1200, // scroll animation duration
+                once: true,     // animate only once
+                mirror: false   // animations won't repeat on scroll back
+            });
+        });
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
     <!-- Fancybox JS -->
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
 
@@ -42,8 +58,12 @@
     </header>
 
     <main>
+
+
+
         {{ $slot }}
     </main>
+
 
     @livewireScripts()
     {{-- 
@@ -65,3 +85,4 @@
 </footer>
 
 </html>
+

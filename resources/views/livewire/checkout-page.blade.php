@@ -146,27 +146,25 @@
     Total amount you need to send us: 
     <span class="font-bold text-black">৳ {{ number_format($total_with_fee, 2) }}</span>.<br>
     
-    <strong>{{ ucfirst($payment_method) }} Number:</strong> 
-    <span 
-        id="paymentNumber" 
-        class="font-bold text-black cursor-pointer underline hover:text-blue-600" 
-        onclick="copyPaymentNumber()"
-        title="Click to copy"
-    >
-        01713787848
-    </span>
-</p>
+<strong>{{ ucfirst($payment_method) }} Number:</strong> 
+<span 
+    x-data="{ copied: false }" 
+    @click="navigator.clipboard.writeText('01713540038').then(() => { copied = true; setTimeout(() => copied = false, 1500) })" 
+    class="font-bold text-black cursor-pointer underline hover:text-blue-600 relative"
+    title="Click to copy"
+>
+    01713540038
 
-<script>
-    function copyPaymentNumber() {
-        const number = document.getElementById('paymentNumber').innerText;
-        navigator.clipboard.writeText(number).then(() => {
-            alert('Payment number copied: ' + number);
-        }).catch(err => {
-            alert('Failed to copy number');
-        });
-    }
-</script>
+    <!-- Copied badge -->
+    <span 
+        x-show="copied" 
+        x-transition 
+        class="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-1 text-xs rounded bg-green-500 text-white shadow"
+    >
+        Copied!
+    </span>
+</span>
+
 
 
         <div class="mt-3">

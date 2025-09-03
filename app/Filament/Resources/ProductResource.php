@@ -8,7 +8,7 @@ use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
-use Filament\Forms\Components\MarkdownEditor;
+
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -22,7 +22,7 @@ use Illuminate\Support\Str;
 use Filament\Forms\Components\TextInput\Mask;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
-
+use Filament\Forms\Components\RichEditor;
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
@@ -49,12 +49,25 @@ class ProductResource extends Resource
                             ->label('Slug')
                             ->dehydrated(),
 
-                        MarkdownEditor::make('description')
-                            ->required()
-
-                            ->columnSpanFull()
-                            ->fileAttachmentsDirectory('products'),
-
+                      RichEditor::make('description')
+    ->required()
+    ->columnSpanFull()
+    ->toolbarButtons([
+        'bold',
+        'italic',
+        'strike',
+        'bulletList',
+        'orderedList',
+        'link',
+        'image',
+        'blockquote',
+        'code',
+        'redo',
+        'undo',
+        'emoji', // emoji support
+    ])
+    ->fileAttachmentsDirectory('products') // store uploaded images
+    ->placeholder('Write a detailed product description here with emojis, images, and rich formatting...'),
 
 
 

@@ -36,12 +36,12 @@
                 <p class="text-base font-semibold leading-4 text-blue-600 dark:text-gray-400">
                   {{Number::currency($order->grand_total,'BDT')}}</p>
               </div>
-              <div class="w-full px-4 mb-4 md:w-1/4">
+              {{-- <div class="w-full px-4 mb-4 md:w-1/4">
                 <p class="mb-2 text-sm leading-5 text-gray-600 dark:text-gray-400 ">
                   Payment Method: </p>
                 <p class="text-base font-semibold leading-4 text-gray-800 dark:text-gray-400 ">
                   {{ $order->payment_method =='cod'?'Cash on Delivery':'Card Payment'}}</p>
-              </div>
+              </div> --}}
             </div>
             <div class="px-4 mb-10">
               <div class="flex flex-col items-stretch justify-center w-full space-y-4 md:flex-row md:space-y-0 md:space-x-8">

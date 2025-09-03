@@ -32,6 +32,16 @@ class ProductDetailPage extends Component
         }
     }
 
+    public function buyNow($product_id)
+{
+    // Optionally, add the product to the cart
+    $this->addToCart($product_id);
+
+    // Redirect directly to checkout page
+    return redirect()->route('checkout');
+}
+
+
     public function addToCart($product_id)
     {
         // Set loading state to true while the process is happening
